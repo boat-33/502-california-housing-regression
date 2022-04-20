@@ -14,9 +14,9 @@ githublink = 'https://github.com/plotly-dash-apps/502-california-housing-regress
 ########### open the pickle files ######
 with open('analysis/model_components/coefs_fig.pkl', 'rb') as f:
     coefs=pickle.load(f)
-with open('analysis/model_components/forest_r2_fig.pkl', 'rb') as f:
+with open('analysis/model_components/r2_fig.pkl', 'rb') as f:
     r2_fig=pickle.load(f)
-with open('analysis/model_components/forest_rmse_fig.pkl', 'rb') as f:
+with open('analysis/model_components/rmse_fig.pkl', 'rb') as f:
     rmse_fig=pickle.load(f)
 with open('analysis/model_components/std_scaler.pkl', 'rb') as f:
     std_scaler=pickle.load(f)
@@ -31,63 +31,60 @@ app.title=tabtitle
 
 ########### Set up the layout
 app.layout = html.Div(children=[
-    html.H1('California Neighborhoods'),
-    html.H4('What is the Median Home Value of a Neighborhood?'),
-    html.H6('Features of Neighborhood:'),
+    html.H1('California Neighborhoods', style={'textAlign': 'center', 'font-weight': 'bold'}),
+    html.H4('What is the Median Home Value of a Neighborhood?', style={'textAlign': 'center'}),
+    html.H6('Features of Neighborhood:', style={'textAlign': 'center'}),
 
     ### Prediction Block
     html.Div(children=[
+        html.Div(children=[
+            html.Div([
+            html.Div('Longitude:'),
+            dcc.Input(id='longitude', value=-119.5, type='number', min=-124.3, max=-114.3, step=.1),
+
+            html.Div('Latitude:'),
+            dcc.Input(id='latitude', value=35.6, type='number', min=32.5, max=41.95, step=.1),
+
+            html.Div('Housing Median Age:'),
+            dcc.Input(id='housing_median_age', value=28, type='number', min=1, max=52, step=1),
+
+            html.Div('Total Rooms:'),
+            dcc.Input(id='total_rooms', value=2000, type='number', min=1000, max=3000, step=100),
+
+            html.Div('Population:'),
+            dcc.Input(id='population', value=1500, type='number', min=1000, max=35000, step=500),
+        ]),
 
         html.Div([
-                    html.Div('Longitude:'),
-                    dcc.Input(id='longitude', value=-119.5, type='number', min=-124.3, max=-114.3, step=.1),
+            html.Div('Households:'),
+            dcc.Input(id='households', value=1000, type='number', min=500, max=6000, step=500),
 
-                    html.Div('Latitude:'),
-                    dcc.Input(id='latitude', value=35.6, type='number', min=32.5, max=41.95, step=.1),
+            html.Div('Median Home Income:'),
+            dcc.Input(id='median_income', value=2, type='number', min=1, max=15, step=1),
 
-                    html.Div('Housing Median Age:'),
-                    dcc.Input(id='housing_median_age', value=28, type='number', min=1, max=52, step=1),
+            html.Div('Income Category:'),
+            dcc.Input(id='income_cat', value=3, type='number', min=1, max=5, step=1),
 
-                    html.Div('Total Rooms:'),
-                    dcc.Input(id='total_rooms', value=2000, type='number', min=1000, max=3000, step=100),
+            html.Div('Rooms per Household:'),
+            dcc.Input(id='rooms_per_hhold', value=5, type='number', min=1, max=7, step=1),
 
-                    html.Div('Population:'),
-                    dcc.Input(id='population', value=1500, type='number', min=1000, max=35000, step=500),
-                ], className='four columns'),
+            html.Div('Population per Household:'),
+            dcc.Input(id='pop_per_household', value=3, type='number', min=1, max=10, step=1),
 
-        html.Div([
+        ]),
+            ], className='input-wrapper'),
+        ], className='wrapper'),
+        
+        html.Div(children=[
+            html.Div([
+            html.H6('Median Home Value (Predicted):', style={'font-weight': 'bold'}),
+            html.Button(children='Submit', id='submit-val', n_clicks=0,
+                            className='button1'
+                            ),
 
-
-                    html.Div('Households:'),
-                    dcc.Input(id='households', value=1000, type='number', min=500, max=6000, step=500),
-
-                    html.Div('Median Home Income:'),
-                    dcc.Input(id='median_income', value=2, type='number', min=1, max=15, step=1),
-
-                    html.Div('Income Category:'),
-                    dcc.Input(id='income_cat', value=3, type='number', min=1, max=5, step=1),
-
-                    html.Div('Rooms per Household:'),
-                    dcc.Input(id='rooms_per_hhold', value=5, type='number', min=1, max=7, step=1),
-
-                    html.Div('Population per Household:'),
-                    dcc.Input(id='pop_per_household', value=3, type='number', min=1, max=10, step=1),
-
-                ], className='four columns'),
-        html.Div([
-                    html.H6('Median Home Value (Predicted):'),
-                    html.Button(children='Submit', id='submit-val', n_clicks=0,
-                                    style={
-                                    'background-color': 'red',
-                                    'color': 'white',
-                                    'margin-left': '5px',
-                                    'verticalAlign': 'center',
-                                    'horizontalAlign': 'center'}
-                                    ),
-
-                    html.Div(id='Results')
-                ], className='four columns')
-            ], className='twelve columns'),
+            html.Div(id='Results', style={'margin-left': '25%'})
+            ]),
+        ], className='submit-wrapper'),
         ### Evaluation Block
         html.Div(children=[
             html.Div(
