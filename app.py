@@ -14,14 +14,14 @@ githublink = 'https://github.com/plotly-dash-apps/502-california-housing-regress
 ########### open the pickle files ######
 with open('analysis/model_components/coefs_fig.pkl', 'rb') as f:
     coefs=pickle.load(f)
-with open('analysis/model_components/r2_fig.pkl', 'rb') as f:
+with open('analysis/model_components/forest_r2_fig.pkl', 'rb') as f:
     r2_fig=pickle.load(f)
-with open('analysis/model_components/rmse_fig.pkl', 'rb') as f:
+with open('analysis/model_components/forest_rmse_fig.pkl', 'rb') as f:
     rmse_fig=pickle.load(f)
 with open('analysis/model_components/std_scaler.pkl', 'rb') as f:
     std_scaler=pickle.load(f)
-with open('analysis/model_components/lin_reg.pkl', 'rb') as f:
-    lin_reg=pickle.load(f)
+with open('analysis/model_components/forest_model.pkl', 'rb') as f:
+    forest_model=pickle.load(f)
 
 ########### Initiate the app
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
@@ -144,7 +144,7 @@ def make_prediction(clicks, longitude, latitude, housing_median_age, total_rooms
         # standardization
         std_inputs = std_scaler.transform(inputs)
 
-        y = lin_reg.predict(std_inputs)
+        y = forest_model.predict(std_inputs)
         formatted_y = "${:,.2f}".format(y[0])
         return formatted_y
 
